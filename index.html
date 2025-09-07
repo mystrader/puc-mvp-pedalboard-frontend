@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Pedalboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/style.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Meu Pedalboard</h1>
+        <p>Gerencie suas plataformas de pedais e seus efeitos</p>
+      </header>
+
+      <div class="main-content">
+        <!-- Seção de Pedalboards -->
+        <section class="pedalboards-section">
+          <div class="section-header">
+            <h2>Plataformas de Pedais</h2>
+            <button class="btn btn-primary" onclick="showCreatePedalboardForm()">+ Nova Plataforma</button>
+          </div>
+
+          <div id="pedalboards-list" class="cards-container">
+            <!-- Pedalboards serão carregados aqui -->
+          </div>
+
+          <!-- Formulário de criação de pedalboard -->
+          <div id="create-pedalboard-form" class="form-modal" style="display: none">
+            <div class="form-content">
+              <h3>Nova Plataforma de Pedais</h3>
+              <form id="pedalboard-form">
+                <div class="form-group">
+                  <label for="pedalboard-name">Nome da Plataforma:</label>
+                  <input type="text" id="pedalboard-name" placeholder="Ex: Setup Principal" required />
+                </div>
+                <div class="form-group">
+                  <label for="pedalboard-description">Descrição da Plataforma:</label>
+                  <textarea id="pedalboard-description" placeholder="Descreva sua plataforma de pedais..."></textarea>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Criar</button>
+                  <button type="button" class="btn btn-secondary" onclick="hideCreatePedalboardForm()">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Seção de Pedais -->
+        <section class="pedals-section">
+          <div class="section-header">
+            <h2>Pedais de Efeito</h2>
+            <button class="btn btn-primary" onclick="showCreatePedalForm()">+ Novo Pedal</button>
+          </div>
+
+          <div id="pedals-list" class="cards-container">
+            <!-- Pedais serão carregados aqui -->
+          </div>
+
+          <!-- Formulário de criação de pedal -->
+          <div id="create-pedal-form" class="form-modal" style="display: none">
+            <div class="form-content">
+              <h3>Novo Pedal</h3>
+              <form id="pedal-form">
+                <div class="form-group">
+                  <label for="pedal-name">Nome:</label>
+                  <input type="text" id="pedal-name" required />
+                </div>
+                <div class="form-group">
+                  <label for="pedal-brand">Marca:</label>
+                  <input type="text" id="pedal-brand" required />
+                </div>
+                <div class="form-group">
+                  <label for="pedal-category">Categoria:</label>
+                  <select id="pedal-category" required>
+                    <option value="">Selecione...</option>
+                    <option value="distortion">Distortion</option>
+                    <option value="overdrive">Overdrive</option>
+                    <option value="delay">Delay</option>
+                    <option value="reverb">Reverb</option>
+                    <option value="chorus">Chorus</option>
+                    <option value="wah">Wah</option>
+                    <option value="compressor">Compressor</option>
+                    <option value="eq">EQ</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="pedal-description">Descrição:</label>
+                  <textarea id="pedal-description"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="pedal-pedalboard-id">Plataforma:</label>
+                  <select id="pedal-pedalboard-id" required>
+                    <option value="">Selecione uma plataforma...</option>
+                  </select>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Criar</button>
+                  <button type="button" class="btn btn-secondary" onclick="hideCreatePedalForm()">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Loading indicator -->
+      <div id="loading" class="loading" style="display: none"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+
+      <!-- Toast notifications -->
+      <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="scripts/script.js"></script>
+  </body>
+</html>
