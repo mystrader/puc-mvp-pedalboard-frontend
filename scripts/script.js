@@ -51,15 +51,48 @@ function renderPedalboards() {
     var html = '';
     for (var i = 0; i < pedalboards.length; i++) {
         var pedalboard = pedalboards[i];
-        html += '<div class="card">';
+        var boardPedals = pedals.filter(function(pedal) {
+            return pedal.pedalboard_id === pedalboard.id;
+        });
+        
+        html += '<div class="card pedalboard-card">';
+        html += '<div class="pedalboard-header">';
         html += '<h3>' + pedalboard.name + '</h3>';
         html += '<p><strong>Descrição:</strong> ' + (pedalboard.description || 'Sem descrição') + '</p>';
-        html += '<p><strong>Usuário ID:</strong> ' + pedalboard.user_id + '</p>';
-        html += '<p><strong>Pedais:</strong> ' + (pedalboard.pedals ? pedalboard.pedals.length : 0) + '</p>';
         html += '<p><strong>Criado em:</strong> ' + new Date(pedalboard.created_at).toLocaleDateString('pt-BR') + '</p>';
+        html += '</div>';
+        
+        // Seção de pedais dentro do pedalboard
+        html += '<div class="pedals-section">';
+        html += '<div class="pedals-header">';
+        html += '<h4><i class="fas fa-guitar"></i> Pedais (' + boardPedals.length + ')</h4>';
+        html += '<button class="btn btn-sm btn-primary" onclick="showCreatePedalForm(' + pedalboard.id + ')">';
+        html += '<i class="fas fa-plus"></i> Adicionar Pedal</button>';
+        html += '</div>';
+        
+        if (boardPedals.length > 0) {
+            html += '<div class="pedals-grid">';
+            for (var j = 0; j < boardPedals.length; j++) {
+                var pedal = boardPedals[j];
+                html += '<div class="pedal-box" onclick="editPedal(' + pedal.id + ')" title="Clique para editar">';
+                html += '<div class="pedal-name">' + pedal.name + '</div>';
+                html += '<div class="pedal-brand">' + pedal.brand + '</div>';
+                html += '<div class="pedal-category">' + pedal.category + '</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+        } else {
+            html += '<div class="empty-pedals">';
+            html += '<p><i class="fas fa-guitar"></i> Nenhum pedal adicionado ainda</p>';
+            html += '</div>';
+        }
+        html += '</div>';
+        
         html += '<div class="card-actions">';
-        html += '<button class="btn btn-primary" onclick="editPedalboard(' + pedalboard.id + ')">Editar</button>';
-        html += '<button class="btn btn-danger" onclick="deletePedalboard(' + pedalboard.id + ')">Deletar</button>';
+        html += '<button class="btn btn-secondary" onclick="editPedalboard(' + pedalboard.id + ')">';
+        html += '<i class="fas fa-edit"></i> Editar</button>';
+        html += '<button class="btn btn-danger" onclick="deletePedalboard(' + pedalboard.id + ')">';
+        html += '<i class="fas fa-trash"></i> Deletar</button>';
         html += '</div>';
         html += '</div>';
     }
@@ -86,7 +119,7 @@ function handleCreatePedalboard(e) {
     var formData = {
         name: document.getElementById('pedalboard-name').value,
         description: document.getElementById('pedalboard-description').value,
-        user_id: 1  // ID fixo do usuário
+        user_id: 1 // Fixo por enquanto, sem necessidade do usuário inserir
     };
     
     var editId = document.getElementById('pedalboard-form').getAttribute('data-edit-id');
@@ -188,12 +221,17 @@ function updatePedalboardDropdown() {
     
     for (var i = 0; i < pedalboards.length; i++) {
         var pedalboard = pedalboards[i];
+        // Mostra apenas o nome, esconde o ID
         dropdown.innerHTML += '<option value="' + pedalboard.id + '">' + pedalboard.name + '</option>';
     }
 }
 
-function showCreatePedalForm() {
+function showCreatePedalForm(pedalboardId) {
+    // Se pedalboardId for fornecido, pré-seleciona o pedalboard
     updatePedalboardDropdown();
+    if (pedalboardId) {
+        document.getElementById('pedal-pedalboard-id').value = pedalboardId;
+    }
     document.getElementById('create-pedal-form').style.display = 'flex';
 }
 
