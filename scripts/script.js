@@ -20,6 +20,25 @@ function setupEventListeners() {
     document.getElementById('pedal-form').addEventListener('submit', handleCreatePedal);
 }
 
+// Função para trocar abas
+function switchTab(tabName) {
+    // Remove active de todos os botões e conteúdos
+    var tabButtons = document.querySelectorAll('.tab-button');
+    var tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+    
+    tabContents.forEach(function(content) {
+        content.classList.remove('active');
+    });
+    
+    // Adiciona active ao botão e conteúdo selecionado
+    event.target.classList.add('active');
+    document.getElementById(tabName + '-tab').classList.add('active');
+}
+
 // Funções de Pedalboard
 function loadPedalboards() {
     showLoading(true);
@@ -196,22 +215,40 @@ function renderPedals() {
         return;
     }
     
-    var html = '';
+    var html = '<div class="table-container">';
+    html += '<table class="pedals-table">';
+    html += '<thead>';
+    html += '<tr>';
+    html += '<th>Nome</th>';
+    html += '<th>Marca</th>';
+    html += '<th>Categoria</th>';
+    html += '<th>Descrição</th>';
+    html += '<th>Plataforma ID</th>';
+    html += '<th>Criado em</th>';
+    html += '<th>Ações</th>';
+    html += '</tr>';
+    html += '</thead>';
+    html += '<tbody>';
+    
     for (var i = 0; i < pedals.length; i++) {
         var pedal = pedals[i];
-        html += '<div class="card">';
-        html += '<h3>' + pedal.name + '</h3>';
-        html += '<p><strong>Marca:</strong> ' + pedal.brand + '</p>';
-        html += '<p><strong>Categoria:</strong> ' + pedal.category + '</p>';
-        html += '<p><strong>Descrição:</strong> ' + (pedal.description || 'Sem descrição') + '</p>';
-        html += '<p><strong>Plataforma ID:</strong> ' + pedal.pedalboard_id + '</p>';
-        html += '<p><strong>Criado em:</strong> ' + new Date(pedal.created_at).toLocaleDateString('pt-BR') + '</p>';
-        html += '<div class="card-actions">';
-        html += '<button class="btn btn-primary" onclick="editPedal(' + pedal.id + ')">Editar</button>';
-        html += '<button class="btn btn-danger" onclick="deletePedal(' + pedal.id + ')">Deletar</button>';
-        html += '</div>';
-        html += '</div>';
+        html += '<tr>';
+        html += '<td><strong>' + pedal.name + '</strong></td>';
+        html += '<td>' + pedal.brand + '</td>';
+        html += '<td><span class="category-badge">' + pedal.category + '</span></td>';
+        html += '<td>' + (pedal.description || 'Sem descrição') + '</td>';
+        html += '<td>' + pedal.pedalboard_id + '</td>';
+        html += '<td>' + new Date(pedal.created_at).toLocaleDateString('pt-BR') + '</td>';
+        html += '<td class="actions-cell">';
+        html += '<button class="btn btn-sm btn-primary" onclick="editPedal(' + pedal.id + ')">Editar</button>';
+        html += '<button class="btn btn-sm btn-danger" onclick="deletePedal(' + pedal.id + ')">Deletar</button>';
+        html += '</td>';
+        html += '</tr>';
     }
+    
+    html += '</tbody>';
+    html += '</table>';
+    html += '</div>';
     container.innerHTML = html;
 }
 

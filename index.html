@@ -17,10 +17,18 @@
         <p>Gerencie suas plataformas de pedais e seus efeitos</p>
       </header>
 
+      <!-- Sistema de Abas -->
+      <div class="tabs-container">
+        <div class="tabs-header">
+          <button class="tab-button active" onclick="switchTab('pedalboards')">Plataformas de Pedais</button>
+          <button class="tab-button" onclick="switchTab('pedals')">Pedais de Efeito</button>
+        </div>
+      </div>
+
       <div class="main-content">
         <!-- Seção de Pedalboards -->
-        <section class="pedalboards-section">
-          <div class="section-header">
+        <section id="pedalboards-tab" class="tab-content active">
+          <div class="section-header full-width">
             <h2>Plataformas de Pedais</h2>
             <button class="btn btn-primary" onclick="showCreatePedalboardForm()">+ Nova Plataforma</button>
           </div>
@@ -52,8 +60,8 @@
         </section>
 
         <!-- Seção de Pedais -->
-        <section class="pedals-section">
-          <div class="section-header">
+        <section id="pedals-tab" class="tab-content">
+          <div class="section-header full-width">
             <h2>Pedais de Efeito</h2>
             <button class="btn btn-primary" onclick="showCreatePedalForm()">+ Novo Pedal</button>
           </div>
