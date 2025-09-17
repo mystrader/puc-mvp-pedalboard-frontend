@@ -5,11 +5,17 @@
 }
 
 body {
-  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background-color: #b0b3b7;
-  min-height: 100vh;
-  color: #1e293b;
-  line-height: 1.6;
+font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #464646;
+    background-image: url(../assets/background_sistema.png);
+    background-size: contain;
+    /* background-position: center; */
+    background-repeat: no-repeat;
+    /* background-attachment: fixed; */
+    min-height: 100vh;
+    color: #1e293b;
+    object-fit: cover;
+    line-height: 1.6;
 }
 
 /* Adicionar padrão sutil ao fundo */
@@ -20,9 +26,9 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
+  /* background-image: 
     radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.05) 0%, transparent 50%); */
   pointer-events: none;
   z-index: -1;
 }
@@ -30,14 +36,10 @@ body::before {
 /* Melhorar cards com sombras mais suaves */
 .card {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
   padding: 28px;
-  border-radius: 16px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  box-shadow: 0px 14px 13px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
 }
 
@@ -56,15 +58,12 @@ body::before {
 }
 
 header {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 25%, #475569 50%, #64748b 75%, #94a3b8 100%);
-  border: 2px solid #e2e8f0;
   border-radius: 16px;
-  margin: 20px auto 40px auto;
+  /* margin: 20px auto 40px auto; */
   padding: 48px 32px;
   position: relative;
   overflow: hidden;
   max-width: 1000px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 header::before {
@@ -74,8 +73,8 @@ header::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.2) 0%, transparent 60%), radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.2) 0%, transparent 60%),
-    radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+  /* background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.2) 0%, transparent 60%), radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.2) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.15) 0%, transparent 70%); */
   pointer-events: none;
 }
 
@@ -89,21 +88,22 @@ header .container {
 }
 
 header h1 {
-  font-size: 2.75rem;
-  font-weight: 300;
-  margin-bottom: 16px;
+  font-size: 3.75rem;
+  font-weight: 600;
+  margin-bottom: 14px;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
   line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 header p {
   font-size: 1.125rem;
-  color: #e2e8f0;
-  font-weight: 300;
+  color: #919191;
+  font-weight: 400;
   margin: 0;
   opacity: 0.95;
 }
@@ -121,20 +121,16 @@ header p {
 
 .tabs-header {
   display: flex;
-  background: #ffffff;
-  border-radius: 12px 12px 0 0;
   border: 1px solid #e2e8f0;
   border-bottom: none;
   overflow: hidden;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .tab-button {
   flex: 1;
   padding: 16px 24px;
-  background: #f8fafc;
   border: none;
-  border-right: 1px solid #e2e8f0;
+  /* border-right: 1px solid #e2e8f0; */
   color: #64748b;
   font-size: 1rem;
   font-weight: 500;
@@ -153,7 +149,6 @@ header p {
 }
 
 .tab-button.active {
-  background: #ffffff;
   color: #3b82f6;
   font-weight: 600;
   border-bottom: 3px solid #3b82f6;
@@ -171,22 +166,19 @@ header p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  background: #ffffff;
+  background: #37373757;
   padding: 20px 24px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .section-header.full-width {
   margin: 0 auto 24px auto;
   max-width: 1200px;
-  width: calc(100% - 40px);
+  /* width: calc(100% - 40px); */
 }
 
 .section-header h2 {
-  color: #1e293b;
+  color: #ffffff;
   font-size: 1.5rem;
   font-weight: 500;
   margin: 0;
@@ -252,14 +244,14 @@ header p {
 .cards-container {
   display: grid;
   gap: 20px;
+  border: 0px;
 }
 
 .card {
-  background: #ffffff;
+  background: #323232;
   padding: 28px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border: 0px;
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); */
   transition: all 0.2s ease;
 }
 
@@ -270,27 +262,27 @@ header p {
 }
 
 .card h3 {
-  color: #1e293b;
-  margin-bottom: 12px;
-  font-size: 1.25rem;
-  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 4px;
+  font-size: 2.25rem;
+  font-weight: 100;
   font-family: "Roboto", sans-serif;
 }
 
 .card p {
-  color: #64748b;
+  color: #95a0af;
   margin-bottom: 8px;
-  line-height: 1.5;
+  line-height: 1;
   font-size: 0.875rem;
+  font-weight: 100;
   font-family: "Roboto", sans-serif;
 }
 
 .card-actions {
   margin-top: 20px;
   display: flex;
+  justify-content: flex-end;
   gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid #f1f5f9;
 }
 
 .form-modal {
@@ -303,7 +295,7 @@ header p {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .form-content {
@@ -429,9 +421,6 @@ header p {
 }
 
 .pedalboard-header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
 }
 
 .pedals-section {
@@ -457,7 +446,7 @@ header p {
 .pedals-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 16px;
 }
 
@@ -525,6 +514,38 @@ header p {
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+/* Estilos para os SVGs dos pedais */
+.pedal-svg-container {
+  width: 120px;
+  height: 160px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.pedal-svg-container:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pedal-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  max-width: 120px;
+  max-height: 160px;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.pedal-svg-container:hover .pedal-svg {
+  filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.4)) brightness(1.1);
+}
+
 .pedal-name {
   font-size: 0.7rem;
   font-weight: 600;
@@ -578,13 +599,13 @@ header p {
 
 /* Estilos para tabela de pedais */
 .table-container {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  margin: 0 auto;
-  max-width: 1200px;
+    background: #ededed;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .pedals-table {
@@ -706,14 +727,12 @@ header p {
   border-left: 4px solid #3b82f6;
 }
 
-.pedalboard-header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
-}
+.pedalboard-header {/* font-weight: 100; */}
 
 .pedals-section {
-  margin-top: 20px;
+  background-color: #232323;
+  padding: 2rem 2rem;
+  border-radius: 1rem;
 }
 
 .pedals-header {
@@ -724,7 +743,7 @@ header p {
 }
 
 .pedals-header h4 {
-  color: #475569;
+  color: #989964;
   font-size: 1rem;
   font-weight: 500;
   display: flex;
@@ -733,9 +752,8 @@ header p {
 }
 
 .pedals-grid {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 16px;
+  display: flex;  
+  margin-bottom: 32px;
 }
 
 .pedal-item {

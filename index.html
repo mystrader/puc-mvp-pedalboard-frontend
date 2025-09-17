@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles/style.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Seus outros links -->
+    
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body>
     <div class="container">
@@ -20,8 +24,12 @@
       <!-- Sistema de Abas -->
       <div class="tabs-container">
         <div class="tabs-header">
-          <button class="tab-button active" onclick="switchTab('pedalboards')">Plataformas de Pedais</button>
-          <button class="tab-button" onclick="switchTab('pedals')">Pedais de Efeito</button>
+          <button class="tab-button active" onclick="switchTab('pedalboards')">
+            <i class="fas fa-th"></i> Plataformas de Pedais
+          </button>
+          <button class="tab-button" onclick="switchTab('pedals')">
+            <i class="fas fa-square"></i> Pedais de Efeito
+          </button>
         </div>
       </div>
 
@@ -70,50 +78,7 @@
             <!-- Pedais serão carregados aqui -->
           </div>
 
-          <!-- Formulário de criação de pedal -->
-          <div id="create-pedal-form" class="form-modal" style="display: none">
-            <div class="form-content">
-              <h3>Novo Pedal</h3>
-              <form id="pedal-form">
-                <div class="form-group">
-                  <label for="pedal-name">Nome:</label>
-                  <input type="text" id="pedal-name" required />
-                </div>
-                <div class="form-group">
-                  <label for="pedal-brand">Marca:</label>
-                  <input type="text" id="pedal-brand" required />
-                </div>
-                <div class="form-group">
-                  <label for="pedal-category">Categoria:</label>
-                  <select id="pedal-category" required>
-                    <option value="">Selecione...</option>
-                    <option value="distortion">Distortion</option>
-                    <option value="overdrive">Overdrive</option>
-                    <option value="delay">Delay</option>
-                    <option value="reverb">Reverb</option>
-                    <option value="chorus">Chorus</option>
-                    <option value="wah">Wah</option>
-                    <option value="compressor">Compressor</option>
-                    <option value="eq">EQ</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="pedal-description">Descrição:</label>
-                  <textarea id="pedal-description"></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="pedal-pedalboard-id">Plataforma:</label>
-                  <select id="pedal-pedalboard-id" required>
-                    <option value="">Selecione uma plataforma...</option>
-                  </select>
-                </div>
-                <div class="form-actions">
-                  <button type="submit" class="btn btn-primary">Criar</button>
-                  <button type="button" class="btn btn-secondary" onclick="hideCreatePedalForm()">Cancelar</button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <!-- Modal de pedal movido para fora das abas -->
         </section>
       </div>
 
@@ -124,6 +89,53 @@
       <div id="toast" class="toast"></div>
     </div>
 
-    <script src="scripts/script.js"></script>
+    <!-- Formulário de criação de pedal - GLOBAL (fora das abas) -->
+    <div id="create-pedal-form" class="form-modal" style="display: none">
+      <div class="form-content">
+        <h3>Novo Pedal</h3>
+        <form id="pedal-form">
+          <div class="form-group">
+            <label for="pedal-name">Nome:</label>
+            <input type="text" id="pedal-name" required />
+          </div>
+          <div class="form-group">
+            <label for="pedal-brand">Marca:</label>
+            <input type="text" id="pedal-brand" required />
+          </div>
+          <div class="form-group">
+            <label for="pedal-category">Categoria:</label>
+            <select id="pedal-category" required>
+              <option value="">Selecione...</option>
+              <option value="distortion">Distortion</option>
+              <option value="overdrive">Overdrive</option>
+              <option value="delay">Delay</option>
+              <option value="reverb">Reverb</option>
+              <option value="chorus">Chorus</option>
+              <option value="wah">Wah</option>
+              <option value="compressor">Compressor</option>
+              <option value="eq">EQ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pedal-description">Descrição:</label>
+            <textarea id="pedal-description"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="pedal-pedalboard-id">Plataforma:</label>
+            <select id="pedal-pedalboard-id" required>
+              <option value="">Selecione uma plataforma...</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Criar</button>
+            <button type="button" class="btn btn-danger" id="delete-pedal-btn" style="display: none;" onclick="deletePedalFromForm()">Deletar</button>
+            <button type="button" class="btn btn-secondary" onclick="hideCreatePedalForm()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- No final do body, alterar: -->
+    <script type="module" src="scripts/script.js"></script>
   </body>
 </html>
