@@ -22,7 +22,7 @@
       </header>
 
       <!-- Sistema de Abas -->
-      <div class="tabs-container">
+      <!-- <div class="tabs-container">
         <div class="tabs-header">
           <button class="tab-button active" onclick="switchTab('pedalboards')">
             <i class="fas fa-th"></i> Plataformas de Pedais
@@ -31,7 +31,7 @@
             <i class="fas fa-square"></i> Pedais de Efeito
           </button>
         </div>
-      </div>
+      </div> -->
 
       <div class="main-content">
         <!-- Seção de Pedalboards -->
@@ -58,6 +58,7 @@
                   <label for="pedalboard-description">Descrição da Plataforma:</label>
                   <textarea id="pedalboard-description" placeholder="Descreva sua plataforma de pedais..."></textarea>
                 </div>
+                <input type="hidden" id="pedalboard-user-id" value="1" />
                 <div class="form-actions">
                   <button type="submit" class="btn btn-primary">Criar</button>
                   <button type="button" class="btn btn-secondary" onclick="hideCreatePedalboardForm()">Cancelar</button>
@@ -136,6 +137,6 @@
     </div>
 
     <!-- No final do body, alterar: -->
-    <script type="module" src="scripts/script.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

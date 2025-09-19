@@ -18,7 +18,7 @@ font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
     line-height: 1.6;
 }
 
-/* Adicionar padrão sutil ao fundo */
+/* Adicionar padrÃ£o sutil ao fundo */
 body::before {
   content: "";
   position: fixed;
@@ -450,7 +450,7 @@ header p {
   margin-bottom: 16px;
 }
 
-/* Estilo dos pedais como retângulos verticais */
+/* Estilo dos pedais como retÃ¢ngulos verticais */
 .pedal-box {
   width: 80px;
   height: 120px;
@@ -757,18 +757,19 @@ header p {
 }
 
 .pedal-item {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: #4e565f;
+  /* border: 1px solid #e2e8f0; */
   border-radius: 8px;
   padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .pedal-item:hover {
-  background: #f1f5f9;
+  background: #5e646a;
   border-color: #cbd5e1;
 }
 

@@ -88,19 +88,8 @@ const renderPedalboards = () => {
         
         return `
             <div class="card pedalboard-card">
-                <div class="pedalboard-header">
-                    <h3>${pedalboard.name}</h3>
-                    <p><strong>Descrição:</strong> ${pedalboard.description || 'Sem descrição'}</p>
-                    <p><strong>Criado em:</strong> ${new Date(pedalboard.created_at).toLocaleDateString('pt-BR')}</p>
-                </div>
-                
                 <div class="pedals-section">
-                    <div class="pedals-header">
-                        <h4><i class="fas fa-guitar"></i> Pedais (${boardPedals.length})</h4>
-                        <button class="btn btn-sm btn-primary" onclick="showCreatePedalForm(${pedalboard.id})">
-                            <i class="fas fa-plus"></i> Adicionar Pedal
-                        </button>
-                    </div>
+             
                     
                     ${boardPedals.length > 0 ? `
                         <div class="pedals-grid">

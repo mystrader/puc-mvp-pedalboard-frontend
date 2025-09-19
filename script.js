@@ -1,13 +1,25 @@
-var API_BASE_URL = 'http://localhost:5002/api';
+// Constante para URL base da API
+const API_BASE_URL = 'http://127.0.0.1:5002/api';
 
-// Estado global
+// Variáveis globais para armazenar dados da API
 var pedalboards = [];
+
 var pedals = [];
 
+// Variáveis removidas - IDs são gerenciados pelo backend
+
 // Inicialização
-document.addEventListener('DOMContentLoaded', function() {
-    loadPedalboards();
-    loadPedals();
+document.addEventListener('DOMContentLoaded', async () => {
+    // Carrega dados iniciais com refresh automático
+    await loadPedalboards();
+    await loadPedals();
+    
+    // Refresh adicional para garantir sincronização
+    setTimeout(async () => {
+        await loadPedalboards();
+        await loadPedals();
+    }, 500);
+    
     setupEventListeners();
 });
 
@@ -21,49 +33,89 @@ function setupEventListeners() {
 }
 
 // Funções de Pedalboard
-function loadPedalboards() {
+const loadPedalboards = async () => {
     showLoading(true);
     
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', API_BASE_URL + '/pedalboards', true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                pedalboards = JSON.parse(xhr.responseText);
-                renderPedalboards();
-            } else {
-                alert('Erro ao carregar pedalboards');
-            }
-            showLoading(false);
+    try {
+        const response = await fetch(`${API_BASE_URL}/pedalboards`);
+        if (!response.ok) {
+            throw new Error(`Erro ao carregar pedalboards: ${response.status}`);
         }
-    };
-    xhr.send();
+        pedalboards = await response.json();
+        renderPedalboards();
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao carregar pedalboards. Verifique se o servidor está rodando.');
+    } finally {
+        showLoading(false);
+    }
 }
 
-function renderPedalboards() {
-    var container = document.getElementById('pedalboards-list');
+const renderPedalboards = () => {
+    const container = document.getElementById('pedalboards-list');
     
     if (pedalboards.length === 0) {
         container.innerHTML = '<div class="empty-state"><h3>Nenhum pedalboard encontrado</h3><p>Crie seu primeiro pedalboard!</p></div>';
         return;
     }
     
-    var html = '';
-    for (var i = 0; i < pedalboards.length; i++) {
-        var pedalboard = pedalboards[i];
-        html += '<div class="card">';
-        html += '<h3>' + pedalboard.name + '</h3>';
-        html += '<p><strong>Descrição:</strong> ' + (pedalboard.description || 'Sem descrição') + '</p>';
-        html += '<p><strong>Usuário ID:</strong> ' + pedalboard.user_id + '</p>';
-        html += '<p><strong>Pedais:</strong> ' + (pedalboard.pedals ? pedalboard.pedals.length : 0) + '</p>';
-        html += '<p><strong>Criado em:</strong> ' + new Date(pedalboard.created_at).toLocaleDateString('pt-BR') + '</p>';
-        html += '<div class="card-actions">';
-        html += '<button class="btn btn-primary" onclick="editPedalboard(' + pedalboard.id + ')">Editar</button>';
-        html += '<button class="btn btn-danger" onclick="deletePedalboard(' + pedalboard.id + ')">Deletar</button>';
-        html += '</div>';
-        html += '</div>';
-    }
-    container.innerHTML = html;
+    container.innerHTML = pedalboards.map(pedalboard => {
+        // Filtrar pedais deste pedalboard
+        const pedalboardPedals = pedals.filter(pedal => pedal.pedalboard_id === pedalboard.id);
+        
+        const pedalsGrid = pedalboardPedals.length > 0 
+            ? `<div class="pedals-grid">
+                ${pedalboardPedals.map(pedal => 
+                    `<div class="pedal-item" title="${pedal.name} - ${pedal.brand} (${pedal.category})" onclick="editPedal(${pedal.id})">
+                        <div class="pedal-icon">${getPedalIcon(pedal.category)}</div>
+                    </div>`
+                ).join('')}
+               </div>`
+            : '<p class="no-pedals">Nenhum pedal adicionado ainda</p>';
+        
+        return `
+            <div class="card">
+                <h3>${pedalboard.name}</h3>
+                <p><strong>Descrição:</strong> ${pedalboard.description || 'Sem descrição'}</p>
+                <p><strong>Criado em:</strong> ${new Date(pedalboard.created_at).toLocaleDateString('pt-BR')}</p>
+                
+                <div class="pedals-section">
+                    <h4>✓ Pedais (${pedalboardPedals.length})</h4>
+                    ${pedalsGrid}
+                    <button class="btn btn-success btn-sm" onclick="showCreatePedalFormForBoard(${pedalboard.id})">+ Adicionar Pedal</button>
+                </div>
+                
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="editPedalboard(${pedalboard.id})">✏️ Editar</button>
+                    <button class="btn btn-danger" onclick="deletePedalboard(${pedalboard.id})">🗑️ Deletar</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Função para obter SVG do pedal baseado na categoria
+function getPedalIcon(category) {
+    var svgMap = {
+        'distortion': 'assets/svg/pedais/pedal_distorcao.svg',
+        'overdrive': 'assets/svg/pedais/pedal_overdrive.svg',
+        'delay': 'assets/svg/pedais/pedal_delay.svg',
+        'reverb': 'assets/svg/pedais/pedal_reverb.svg',
+        'chorus': 'assets/svg/pedais/pedal_chorus.svg',
+        'compressor': 'assets/svg/pedais/pedal_compressor.svg',
+        'eq': 'assets/svg/pedais/pedal_equalizador.svg',
+        'wah': 'assets/svg/pedais/pedal_wha.svg',
+        'fuzz': 'assets/svg/pedais/pedal_distorcao.svg' // Usando distorção como fallback para fuzz
+    };
+    var svgPath = svgMap[category.toLowerCase()] || 'assets/svg/pedais/pedal_distorcao.svg';
+    return '<img src="' + svgPath + '" alt="' + category + '" class="pedal-svg">';
+}
+
+// Função para abrir formulário de pedal com pedalboard pré-selecionado
+function showCreatePedalFormForBoard(pedalboardId) {
+    updatePedalboardDropdown();
+    document.getElementById('pedal-pedalboard-id').value = pedalboardId;
+    document.getElementById('create-pedal-form').style.display = 'flex';
 }
 
 function showCreatePedalboardForm() {
@@ -80,116 +132,160 @@ function hideCreatePedalboardForm() {
     document.querySelector('#create-pedalboard-form button[type="submit"]').textContent = 'Criar';
 }
 
-function handleCreatePedalboard(e) {
+const handleCreatePedalboard = async (e) => {
     e.preventDefault();
     
-    var formData = {
-        name: document.getElementById('pedalboard-name').value,
-        description: document.getElementById('pedalboard-description').value,
-        user_id: parseInt(document.getElementById('pedalboard-user-id').value)
-    };
+    const name = document.getElementById('pedalboard-name').value;
+    const description = document.getElementById('pedalboard-description').value;
+    const user_id = parseInt(document.getElementById('pedalboard-user-id').value) || 1;
     
-    var editId = document.getElementById('pedalboard-form').getAttribute('data-edit-id');
-    var isEdit = editId !== null;
-    var url = isEdit ? API_BASE_URL + '/pedalboards/' + editId : API_BASE_URL + '/pedalboards';
-    var method = isEdit ? 'PUT' : 'POST';
+    const editId = document.getElementById('pedalboard-form').getAttribute('data-edit-id');
+    const isEdit = editId !== null;
     
     showLoading(true);
     
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200 || xhr.status === 201) {
-                alert(isEdit ? 'Pedalboard atualizado com sucesso!' : 'Pedalboard criado com sucesso!');
-                hideCreatePedalboardForm();
-                loadPedalboards();
-                loadPedals();
-            } else {
-                alert(isEdit ? 'Erro ao atualizar pedalboard' : 'Erro ao criar pedalboard');
-            }
-            showLoading(false);
-        }
+    const requestData = {
+        name,
+        description,
+        user_id
     };
-    xhr.send(JSON.stringify(formData));
+    
+    const url = isEdit ? `${API_BASE_URL}/pedalboards/${editId}` : `${API_BASE_URL}/pedalboards`;
+    const method = isEdit ? 'PUT' : 'POST';
+    
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro ao ${isEdit ? 'atualizar' : 'criar'} pedalboard: ${response.status}`);
+        }
+        
+        await response.json();
+        hideCreatePedalboardForm();
+        alert(`Pedalboard ${isEdit ? 'atualizado' : 'criado'} com sucesso!`);
+        
+        // Refresh automático
+        await loadPedalboards();
+        await loadPedals();
+        updatePedalboardDropdown();
+    } catch (error) {
+        console.error('Erro:', error);
+        alert(`Erro ao ${isEdit ? 'atualizar' : 'criar'} pedalboard. Verifique se o servidor está rodando.`);
+    } finally {
+        showLoading(false);
+    }
 }
 
-function deletePedalboard(id) {
-    if (!confirm('Tem certeza que deseja deletar este pedalboard?')) return;
-    
-    showLoading(true);
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open('DELETE', API_BASE_URL + '/pedalboards/' + id, true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                alert('Pedalboard deletado!');
-                loadPedalboards();
-                loadPedals();
-            } else {
-                alert('Erro ao deletar');
+const deletePedalboard = async (id) => {
+    if (confirm('Tem certeza que deseja deletar este pedalboard? Todos os pedais associados também serão removidos.')) {
+        showLoading(true);
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/pedalboards/${id}`, {
+                method: 'DELETE'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erro ao deletar pedalboard: ${response.status}`);
             }
+            
+            await response.json();
+            alert('Pedalboard deletado com sucesso!');
+            
+            // Refresh automático
+            await loadPedalboards();
+            await loadPedals();
+            updatePedalboardDropdown();
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao deletar pedalboard. Verifique se o servidor está rodando.');
+        } finally {
             showLoading(false);
         }
-    };
-    xhr.send();
+    }
 }
 
 // Funções de Pedal
-function loadPedals() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', API_BASE_URL + '/pedals', true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                pedals = JSON.parse(xhr.responseText);
-                renderPedals();
-                updatePedalboardDropdown();
-            } else {
-                alert('Erro ao carregar pedais');
-            }
+const loadPedals = async () => {
+    showLoading(true);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/pedals`);
+        if (!response.ok) {
+            throw new Error(`Erro ao carregar pedais: ${response.status}`);
         }
-    };
-    xhr.send();
+        pedals = await response.json();
+        renderPedals();
+        updatePedalboardDropdown();
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao carregar pedais. Verifique se o servidor está rodando.');
+    } finally {
+        showLoading(false);
+    }
 }
 
-function renderPedals() {
-    var container = document.getElementById('pedals-list');
+const renderPedals = () => {
+    const container = document.getElementById('pedals-list');
     
     if (pedals.length === 0) {
         container.innerHTML = '<div class="empty-state"><h3>Nenhum pedal encontrado</h3><p>Adicione seu primeiro pedal!</p></div>';
         return;
     }
     
-    var html = '';
-    for (var i = 0; i < pedals.length; i++) {
-        var pedal = pedals[i];
-        html += '<div class="card">';
-        html += '<h3>' + pedal.name + '</h3>';
-        html += '<p><strong>Marca:</strong> ' + pedal.brand + '</p>';
-        html += '<p><strong>Categoria:</strong> ' + pedal.category + '</p>';
-        html += '<p><strong>Descrição:</strong> ' + (pedal.description || 'Sem descrição') + '</p>';
-        html += '<p><strong>Plataforma ID:</strong> ' + pedal.pedalboard_id + '</p>';
-        html += '<p><strong>Criado em:</strong> ' + new Date(pedal.created_at).toLocaleDateString('pt-BR') + '</p>';
-        html += '<div class="card-actions">';
-        html += '<button class="btn btn-primary" onclick="editPedal(' + pedal.id + ')">Editar</button>';
-        html += '<button class="btn btn-danger" onclick="deletePedal(' + pedal.id + ')">Deletar</button>';
-        html += '</div>';
-        html += '</div>';
-    }
-    container.innerHTML = html;
+    container.innerHTML = `
+        <table class="pedals-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Marca</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th>Plataforma</th>
+                    <th>Criado em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${pedals.map(pedal => {
+                    const pedalboard = pedalboards.find(pb => pb.id == pedal.pedalboard_id);
+                    const pedalboardName = pedalboard ? pedalboard.name : 'N/A';
+                    
+                    return `
+                        <tr>
+                            <td>${pedal.name}</td>
+                            <td>${pedal.brand}</td>
+                            <td>${pedal.category}</td>
+                            <td>${pedal.description || 'Sem descrição'}</td>
+                            <td>${pedalboardName}</td>
+                            <td>${new Date(pedal.created_at).toLocaleDateString('pt-BR')}</td>
+                            <td class="table-actions">
+                                <button class="btn btn-primary btn-sm" onclick="editPedal(${pedal.id})">✏️</button>
+                                <button class="btn btn-danger btn-sm" onclick="deletePedal(${pedal.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
 }
 
-function updatePedalboardDropdown() {
-    var dropdown = document.getElementById('pedal-pedalboard-id');
-    dropdown.innerHTML = '<option value="">Selecione uma plataforma...</option>';
+const updatePedalboardDropdown = () => {
+    const select = document.getElementById('pedal-pedalboard-id');
     
-    for (var i = 0; i < pedalboards.length; i++) {
-        var pedalboard = pedalboards[i];
-        dropdown.innerHTML += '<option value="' + pedalboard.id + '">' + pedalboard.name + '</option>';
-    }
+    select.innerHTML = `
+        <option value="">Selecione um pedalboard</option>
+        ${pedalboards.map(pedalboard => 
+            `<option value="${pedalboard.id}">${pedalboard.name}</option>`
+        ).join('')}
+    `;
 }
 
 function showCreatePedalForm() {
@@ -207,61 +303,113 @@ function hideCreatePedalForm() {
     document.querySelector('#create-pedal-form button[type="submit"]').textContent = 'Criar';
 }
 
-function handleCreatePedal(e) {
+const handleCreatePedal = async (e) => {
     e.preventDefault();
     
-    var formData = {
-        name: document.getElementById('pedal-name').value,
-        brand: document.getElementById('pedal-brand').value,
-        category: document.getElementById('pedal-category').value,
-        description: document.getElementById('pedal-description').value,
-        pedalboard_id: parseInt(document.getElementById('pedal-pedalboard-id').value)
-    };
+    const name = document.getElementById('pedal-name').value;
+    const brand = document.getElementById('pedal-brand').value;
+    const category = document.getElementById('pedal-category').value;
+    const description = document.getElementById('pedal-description').value;
+    const pedalboard_id = parseInt(document.getElementById('pedal-pedalboard-id').value);
     
-    var editId = document.getElementById('pedal-form').getAttribute('data-edit-id');
-    var isEdit = editId !== null;
-    var url = isEdit ? API_BASE_URL + '/pedals/' + editId : API_BASE_URL + '/pedals';
-    var method = isEdit ? 'PUT' : 'POST';
+    const editId = document.getElementById('pedal-form').getAttribute('data-edit-id');
+    const isEdit = editId !== null;
     
     showLoading(true);
     
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200 || xhr.status === 201) {
-                alert(isEdit ? 'Pedal atualizado com sucesso!' : 'Pedal criado com sucesso!');
-                hideCreatePedalForm();
-                loadPedals();
-            } else {
-                alert(isEdit ? 'Erro ao atualizar pedal' : 'Erro ao criar pedal');
-            }
-            showLoading(false);
-        }
+    const requestData = {
+        name,
+        brand,
+        category,
+        description,
+        pedalboard_id
     };
-    xhr.send(JSON.stringify(formData));
+    
+    const url = isEdit ? `${API_BASE_URL}/pedals/${editId}` : `${API_BASE_URL}/pedals`;
+    const method = isEdit ? 'PUT' : 'POST';
+    
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro ao ${isEdit ? 'atualizar' : 'criar'} pedal: ${response.status}`);
+        }
+        
+        await response.json();
+        hideCreatePedalForm();
+        alert(`Pedal ${isEdit ? 'atualizado' : 'criado'} com sucesso!`);
+        
+        // Refresh automático
+        await loadPedals();
+        await loadPedalboards();
+    } catch (error) {
+        console.error('Erro:', error);
+        alert(`Erro ao ${isEdit ? 'atualizar' : 'criar'} pedal. Verifique se o servidor está rodando.`);
+    } finally {
+        showLoading(false);
+    }
 }
 
-function deletePedal(id) {
-    if (!confirm('Tem certeza que deseja deletar este pedal?')) return;
-    
-    showLoading(true);
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open('DELETE', API_BASE_URL + '/pedals/' + id, true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                alert('Pedal deletado!');
-                loadPedals();
-            } else {
-                alert('Erro ao deletar pedal');
+const deletePedal = async (id) => {
+    if (confirm('Tem certeza que deseja deletar este pedal?')) {
+        showLoading(true);
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/pedals/${id}`, {
+                method: 'DELETE'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erro ao deletar pedal: ${response.status}`);
             }
+            
+            await response.json();
+            alert('Pedal deletado com sucesso!');
+            
+            // Refresh automático
+            await loadPedals();
+            await loadPedalboards();
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao deletar pedal. Verifique se o servidor está rodando.');
+        } finally {
             showLoading(false);
         }
-    };
-    xhr.send();
+    }
+}
+
+// Função para trocar abas
+function switchTab(tabName) {
+    // Remover classe active de todos os botões de aba
+    var tabButtons = document.querySelectorAll('.tab-button');
+    for (var i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove('active');
+    }
+    
+    // Esconder todas as abas
+    var tabContents = document.querySelectorAll('.tab-content');
+    for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+    }
+    
+    // Ativar a aba selecionada
+    if (tabName === 'pedalboards') {
+        document.querySelector('.tab-button[onclick="switchTab(\'pedalboards\')"]').classList.add('active');
+        document.getElementById('pedalboards-tab').classList.add('active');
+    } else if (tabName === 'pedals') {
+        document.querySelector('.tab-button[onclick="switchTab(\'pedals\')"]').classList.add('active');
+        document.getElementById('pedals-tab').classList.add('active');
+    }
+    
+    // Fechar modais abertos
+    hideCreatePedalboardForm();
+    hideCreatePedalForm();
 }
 
 // Funções utilitárias
