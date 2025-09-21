@@ -21,24 +21,11 @@ puc-mvp-pedalboard-frontend/
 
 1. Navegue até a pasta do projeto:
    ```
-   c:\Users\user\Documents\DESENVOLVIMENTO\PUC\1_MVP\puc-mvp-pedalboard-frontend\
+   {SUA_PASTA}\puc-mvp-pedalboard-frontend\
    ```
 
 2. Clique duas vezes no arquivo `index.html` ou clique com o botão direito e selecione "Abrir com" > seu navegador preferido
 
-3. O projeto funcionará completamente offline com dados de exemplo pré-carregados
-
-### Opção 2: Servidor Local (Opcional)
-
-```bash
-# Navegue até a pasta do frontend
-cd puc-mvp-pedalboard-frontend
-
-# Inicie o servidor HTTP na porta 3000
-python -m http.server 3000
-```
-
-Após executar o comando, acesse: http://localhost:3000
 
 ## Funcionalidades
 
