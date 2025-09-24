@@ -1,3 +1,7 @@
+
+<img width="1472" height="376" alt="image" src="https://github.com/user-attachments/assets/3d98a8ab-2919-4b97-8dea-7e18f153b142" />
+
+
 # Frontend - Pedalboard
 
 Frontend para gerenciamento de plataformas de pedais e efeitos.
